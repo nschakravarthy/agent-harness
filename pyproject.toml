@@ -24,3 +24,12 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/harness"]
+
+[tool.pytest.ini_options]
+# tests/unit  — one module under test, everything else stubbed.
+# tests/e2e   — the whole loop: agent, provider, registry, real filesystem.
+testpaths = ["tests/unit", "tests/e2e"]
+markers = [
+    "live: hits a real provider API; needs credentials and costs money",
+]
+addopts = "-m 'not live'"
