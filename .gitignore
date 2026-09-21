@@ -1,0 +1,46 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Packaging / build output
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Tooling caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Secrets. Real credentials never get committed, but *.example templates do,
+# so they have to be exempted from the .env.* glob above them.
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Stray local databases. Postgres is the only supported backend, so anything
+# matching these is a leftover SQLite file rather than something to track.
+*.db
+*.sqlite
+*.sqlite3
+
+# Editors / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Not listed here: poetry.lock and alembic/versions/*.py are deliberately
+# tracked. frontend/ carries its own .gitignore for node_modules and dist.

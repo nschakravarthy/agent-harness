@@ -1,0 +1,31 @@
+import uuid as uuid_pkg
+from datetime import datetime
+
+from pydantic import BaseModel
+from sqlalchemy import text
+from sqlmodel import Field, SQLModel
+
+class HealthCheck(BaseModel):
+   name: str
+   version: str
+   description: str
+
+class UUIDModel(SQLModel):
+   uuid: uuid_pkg.UUID = Field(
+       default_factory=uuid_pkg.uuid4,
+       primary_key=True,
+       index=True,
+       nullable=False
+   )
+
+
+class TimestampModel(SQLModel):
+   created_at: datetime = Field(
+       default_factory=datetime.utcnow,
+       nullable=False
+   )
+
+   updated_at: datetime = Field(
+       default_factory=datetime.utcnow,
+       nullable=False
+   )
