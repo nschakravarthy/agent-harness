@@ -1,19 +1,18 @@
 import fnmatch
 
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import Request
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 
-from sqlalchemy import delete, select
+from sqlalchemy import select
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.user.utils import verify_token
 
-from api.core.config import settings
 from api.core.db import async_engine
 from api.user.models import User
-from api.core.config import settings, PUBLIC_PATHS
+from api.core.config import PUBLIC_PATHS
 
 # Create a session factory once (no yield, no generator)
 AsyncSessionLocal = sessionmaker(

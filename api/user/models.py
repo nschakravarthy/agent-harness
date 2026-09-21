@@ -1,6 +1,3 @@
-from typing import Optional
-
-from sqlalchemy import Column, event
 from sqlmodel import Field, SQLModel
 
 from api.core.models import TimestampModel, UUIDModel
