@@ -1,8 +1,8 @@
-# Memory Agent — Frontend
+# Otto — Frontend
 
-A small React + Vite + TypeScript app for chatting with the Stateful Memory
-Agent backend. It gates on auth (login / register), then opens a chat UI with
-a sidebar to start a new chat and browse previous chats.
+A small React + Vite + TypeScript app for chatting with the Otto backend. It
+gates on auth (login / register), then opens a chat UI with a sidebar to start
+a new chat and browse previous chats.
 
 ## Stack
 

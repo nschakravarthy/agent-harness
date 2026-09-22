@@ -1,9 +1,9 @@
 {
-  "name": "memory-agent-frontend",
+  "name": "otto-frontend",
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Frontend for the Stateful Memory Agent — auth + chat UI",
+  "description": "Frontend for Otto — auth + chat UI",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

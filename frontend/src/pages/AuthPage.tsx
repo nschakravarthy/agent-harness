@@ -36,9 +36,9 @@ export default function AuthPage() {
       <div className="auth-card">
         <div className="auth-brand">
           <span className="auth-logo">◆</span>
-          <h1>Memory Agent</h1>
+          <h1>Otto</h1>
           <p className="auth-subtitle">
-            A conversational agent that remembers across sessions.
+            An agent running on a harness.
           </p>
         </div>
 
