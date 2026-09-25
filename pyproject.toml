@@ -32,19 +32,6 @@ dependencies = [
 ]
 
 
-# Poetry is used for dependency management only: no package is built or
-# installed from this repo, so there is no [build-system] section and the
-# project root is never installed into the virtualenv.
-[tool.poetry]
-package-mode = false
-
-# Nothing is installed into the virtualenv, so the repo root has to be put on
-# sys.path explicitly for tests to import `harness` / `api`. Outside pytest,
-# run scripts as modules from the root (python -m tests.<name>) so the CWD
-# lands on sys.path the same way.
-[tool.pytest.ini_options]
-pythonpath = ["."]
-testpaths = ["tests"]
 [tool.poetry]
 # Installed into the venv in editable mode (`poetry install`) so that `harness`
 # and `api` import from anywhere, not just when the repo root happens to be the

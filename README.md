@@ -185,7 +185,7 @@ Requires Python 3.12+, Poetry, and Docker.
 
 ```bash
 docker compose up -d postgres-db     # Postgres 15 on :5432
-poetry install                       # non-package mode: deps only, no root install
+poetry install                       # installs harness/api editable into the venv
 poetry run alembic upgrade head      # create user / session / message tables
 poetry run uvicorn api.main:app --reload
 ```
