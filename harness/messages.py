@@ -2,10 +2,13 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
-from typing import Annotated, Any, Literal
+from typing import TYPE_CHECKING, Annotated, Any, Literal
 from uuid import uuid4
 
 from pydantic import BaseModel, ConfigDict, Field
+
+if TYPE_CHECKING:  # providers builds on messages, never the other way round
+    from harness.providers.base import ProviderResponse
 
 Role = Literal["user", "assistant", "system"]
 
@@ -72,6 +75,22 @@ class Message(BaseModel):
         # A tool result rides on the "user" role. Adapters remap it for
         # providers that use a dedicated "tool" role or no role at all.
         return cls(role="user", blocks=[result])
+    
+    @classmethod
+    def from_assistant_response(cls, response: "ProviderResponse") -> "Message":
+        """
+        Converting a transient ProviderResponse into a durable Message in the Transcript
+        """
+        blocks: list[Block] = []
+        if response.tool_calls:
+            for ref in response.tool_calls:
+                blocks.append(
+                    ToolCall(id=ref.id, name=ref.name, args=dict(ref.args))
+                )
+        else:
+            blocks.append(TextBlock(text=response.text or ""))
+        return cls(role = "assistant", blocks=blocks)
+
 
 
 # ── Transcript: the whole conversation ───────────────────────────────────
