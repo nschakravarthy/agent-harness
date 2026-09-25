@@ -1,3 +1,12 @@
+.git
+.venv
+**/__pycache__
+**/.pytest_cache
+**/.ruff_cache
+# The frontend runs from a bind mount in its own node container; the backend
+# image needs none of its build output or dependencies.
+frontend/node_modules
+frontend/dist
 # Keep the build context small and the image reproducible.
 # tests/ is deliberately NOT ignored: the image build runs the test suite.
 

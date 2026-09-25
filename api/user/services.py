@@ -1,10 +1,9 @@
-from fastapi import HTTPException, Depends
-from fastapi import status as http_status
-from sqlalchemy import delete, select
+from fastapi import HTTPException
+from sqlalchemy import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from api.user.models import User
-from api.user.schemas import UserCreate, UserResponse
+from api.user.schemas import UserCreate
 from api.user.utils import get_password_hash, create_token_session_id, verify_password, refresh_access_token
 
 async def create_user(data: UserCreate, session: AsyncSession):
