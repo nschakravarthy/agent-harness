@@ -7,3 +7,46 @@
 # image needs none of its build output or dependencies.
 frontend/node_modules
 frontend/dist
+# Keep the build context small and the image reproducible.
+# tests/ is deliberately NOT ignored: the image build runs the test suite.
+
+.git/
+.gitignore
+
+# Virtual environments - the image installs its own
+.venv/
+venv/
+env/
+ENV/
+
+# Python bytecode and tooling caches. Stale caches copied into the build
+# would make the test run inside Docker differ from a clean checkout.
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Frontend runs as its own compose service from a bind mount; its
+# dependencies are enormous and the backend image never reads them.
+frontend/node_modules/
+frontend/dist/
+
+# Secrets never enter an image layer
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Stray local databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Editors / OS
+.idea/
+.vscode/
+.DS_Store
+*.swp

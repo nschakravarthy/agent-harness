@@ -10,6 +10,51 @@ services:
         condition: service_healthy
     networks:
       - backend-network
+    # python rather than curl: the slim base image has no curl, and adding
+    # one just for a healthcheck grows the production image.
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - import urllib.request; urllib.request.urlopen("http://localhost:8000/api/v1/", timeout=3)
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+
+  # The tiers that need live services. The unit and smoke tiers already ran
+  # during `docker build` - see Dockerfile stage 3 - so this covers the rest:
+  #
+  #   docker compose run --rm tests
+  #
+  # It sits behind a profile so `docker compose up` does not start it.
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: test
+    profiles:
+      - test
+    environment:
+      # Integration tests talk to Postgres directly; tests/conftest.py points
+      # them at a database of its own, never at testdb.
+      - DB_SERVER=postgres-db
+      - DB_PORT=5432
+      - DB_USER=testadmin
+      - DB_PASSWORD=test1234
+      # e2e tests only know a URL - this is the backend service on the
+      # compose network.
+      - E2E_BASE_URL=http://backend:8000
+      # In CI a missing service is a broken pipeline, not a reason to skip.
+      - TESTS_REQUIRE_SERVICES=1
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
+    networks:
+      - backend-network
     
   frontend:
     image: node:20-alpine

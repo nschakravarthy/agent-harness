@@ -45,11 +45,71 @@ package-mode = false
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]
+[tool.poetry]
+# Installed into the venv in editable mode (`poetry install`) so that `harness`
+# and `api` import from anywhere, not just when the repo root happens to be the
+# working directory. Both are namespace packages, so they are listed explicitly.
+packages = [
+    { include = "harness" },
+    { include = "api" },
+]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
 
 [dependency-groups]
 dev = [
     "pytest (>=9.0.3,<10.0.0)",
+    "pytest-asyncio (>=1.3.0,<2.0.0)",
+    "pytest-cov (>=7.0.0,<8.0.0)",
     "ruff (>=0.15.12,<0.16.0)",
     # Required by starlette's TestClient; not used by the app at runtime.
     "httpx (>=0.28.1,<0.29.0)"
+]
+
+
+# ── Test configuration ───────────────────────────────────────────────────
+# Tiers live in tests/<tier>/ and are auto-marked by tests/conftest.py, so
+# `pytest -m unit` works without repeating the marker on every test.
+
+[tool.pytest.ini_options]
+minversion = "9.0"
+testpaths = ["tests"]
+# `api` and `harness` are namespace packages at the repo root rather than an
+# installed distribution, so the root has to be on sys.path.
+pythonpath = ["."]
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--strict-config",
+    # importlib keeps same-named test modules in different tiers (e.g.
+    # unit/harness/test_messages.py and smoke/test_messages.py) from clashing.
+    "--import-mode=importlib",
+]
+markers = [
+    "unit: no I/O - pure logic, runs everywhere in milliseconds",
+    "integration: drives the ASGI app against a real Postgres test database",
+    "e2e: drives a already-running server over HTTP",
+    "smoke: shallow post-deploy checks that the system is wired up and alive",
+]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+# Not `error`: api/core/models.py still calls datetime.utcnow(), which Python
+# 3.12 deprecates. Tighten this once that is fixed.
+filterwarnings = [
+    "ignore::DeprecationWarning:sqlalchemy.*",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["api", "harness"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
 ]
