@@ -3,6 +3,18 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    # Secrets are injected at run time, never baked into the image -
+    # .dockerignore keeps .env out of the build context, so the key exists
+    # only in the running container's environment.
+    #
+    # The valueless form is deliberate: Compose fills it from ./.env (or the
+    # shell), and when neither sets it the variable is left unset rather than
+    # passed as "". An unset key makes the Anthropic SDK fail with a clear
+    # "api_key must be set"; an empty one would reach the API and 401. It also
+    # keeps `docker compose up` working with no .env, which `env_file` would
+    # break on this Compose version (`required: false` needs v2.24+).
+    environment:
+      - ANTHROPIC_API_KEY
     ports:
       - "8000:8000"
     depends_on:

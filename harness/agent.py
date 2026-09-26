@@ -4,6 +4,7 @@ from typing import Callable
 
 from harness.messages import Message, ToolResult, Transcript
 from harness.providers.base import Provider
+from harness.providers.anthropic import AnthropicProvider
 
 MAX_ITERATIONS = 20
 
@@ -42,3 +43,20 @@ def run(
             transcript.append(Message.tool_result(result))
 
     raise RuntimeError(f"agent did not finish in {MAX_ITERATIONS} iterations")
+
+def run_anthropic(
+    tools: dict[str, Callable[..., str]],
+    tool_schemas: list[dict],
+    user_message: str,
+    transcript: Transcript | None = None,
+    system: str | None = None,
+) -> str:
+    provider = AnthropicProvider()
+    return run(
+        provider,
+        tools,
+        tool_schemas,
+        user_message,
+        transcript,
+        system
+    )

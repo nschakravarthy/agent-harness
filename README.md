@@ -196,6 +196,20 @@ misconfigured environment fails loudly instead of quietly writing to a local
 file. Connection defaults match the compose service, so no `.env` is needed for
 local work.
 
+Talking to a live model needs an API key:
+
+```bash
+cp .env.example .env                 # then fill in ANTHROPIC_API_KEY
+```
+
+`.env` is gitignored and excluded from the build context, so the key reaches
+neither a commit nor an image layer; `docker compose` injects it into the
+running backend container instead. Nothing at build time wants it — the unit
+and smoke tiers that run during `docker build` are pure logic over
+`MockProvider`, with no network. Without a `.env` the variable is left unset
+rather than empty, so the Anthropic SDK fails with a clear "api_key must be
+set" instead of a puzzling 401.
+
 The frontend runs separately:
 
 ```bash
