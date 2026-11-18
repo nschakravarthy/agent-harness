@@ -20,7 +20,7 @@ class ToolRegistry:
         self.tools[tool.name] = tool
 
     def schemas(self) -> list[dict]:
-        return [t.schema_for_provider() for t in self.tool_values()]
+        return [t.schema_for_provider() for t in self.tool.values()]
 
     def dispatch(self, name:str, args: dict[str,Any], call_id:str) -> ToolResult:
         """

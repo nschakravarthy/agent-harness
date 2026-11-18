@@ -29,7 +29,7 @@ def run(
             return response.text or ""
 
         for ref in response.tool_calls:
-            result = registry.dispath(ref.name, ref.args, ref.id)
+            result = registry.dispatch(ref.name, ref.args, ref.id)
             transcript.append(Message.tool_result(result))
 
     raise RuntimeError(f"agent did not finish in {MAX_ITERATIONS} iterations")
